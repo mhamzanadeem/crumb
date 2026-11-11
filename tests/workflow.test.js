@@ -22,6 +22,8 @@ test('full approval, token authorization, verified capture, production and refun
   const request={headers:new Headers({'x-order-token':created.accessToken})};
   assert.equal((await authorizeOrder(request,id,null)).id,id);
   await assert.rejects(()=>authorizeOrder({headers:new Headers()},id,{workspace:'different_workspace'}),/secure order key/);
+  assert.equal((await authorizeOrder({headers:new Headers()},id,{role:'judge',workspace:'demo_workflow',orderId:id})).id,id);
+  await assert.rejects(()=>authorizeOrder({headers:new Headers()},id,{role:'judge',workspace:'demo_workflow',orderId:'another-order'}),/secure order key/);
   await assert.rejects(()=>staffAction(id,'other',{action:'approve'}),/not found/);
   await staffAction(id,'demo_workflow',{action:'approve',amount:'12.00'});
   await assert.rejects(()=>staffAction(id,'demo_workflow',{action:'preparing'}),/Verified payment/);
@@ -30,18 +32,35 @@ test('full approval, token authorization, verified capture, production and refun
   globalThis.fetch=async(url,options={})=>{
     if(url.endsWith('/oauth2/token'))return Response.json({access_token:'TEST'});
     if(url.endsWith('/v2/checkout/orders')&&options.method==='POST'){createCount++;return Response.json({...provider(),status:'CREATED'});}
-    if(url.endsWith('/capture')){captureCount++;captured=true;return Response.json(provider());}
+    if(url.endsWith('/capture')){captureCount++;captured=true;return Response.json({id:'PP-ORDER',status:'COMPLETED'});}
     if(url.includes('/refund'))return Response.json({id:'REF-1',status:'COMPLETED'});
     return Response.json(provider());
   };
   try {
     const o=await getOrder(id);await checkout(o,1);await checkout(await getOrder(id),1);assert.equal(createCount,1,'repeat checkout reuses original PayPal order');
-    await capture(await getOrder(id));await capture(await getOrder(id));assert.equal(captureCount,1,'repeat capture is idempotent');
+    const pending=await getOrder(id);
+    const results=await Promise.all([capture(pending),capture(pending)]);
+    assert.ok(results.every(x=>x.payment.status==='completed'),'concurrent return/webhook checks share verified result');
+    await capture(await getOrder(id));assert.equal(captureCount,1,'repeat capture is idempotent and minimal response is followed by full GET');
     await staffAction(id,'demo_workflow',{action:'preparing'});
     let paid=await getOrder(id);await updateOrder(paid,{cancelRequested:true},'Customer cancellation');
     await staffAction(id,'demo_workflow',{action:'refund'});
     assert.equal((await getOrder(id)).payment.status,'refunded');assert.equal((await getOrder(id)).status,'cancelled');
   }finally{globalThis.fetch=originalFetch;}
+});
+
+test('recover an already completed PayPal order without charging again',{skip:!services},async()=>{
+  const {createOrder,staffAction,getOrder,updateOrder,capture}=services;
+  const created=await createOrder(input(),'demo_recovery','recovery');const id=created.order.id;
+  await staffAction(id,'demo_recovery',{action:'approve',amount:'12.00'});
+  await updateOrder(await getOrder(id),{payment:{status:'pending',paypalOrderId:'PP-RECOVER',amount:'12.00',currency:'USD',quoteVersion:1}},'Checkout created');
+  const originalFetch=globalThis.fetch;let captures=0;
+  globalThis.fetch=async(url,options={})=>{
+    if(url.endsWith('/oauth2/token'))return Response.json({access_token:'test'});
+    if(url.endsWith('/capture')){captures++;throw new Error('Must not charge again');}
+    return Response.json({id:'PP-RECOVER',status:'COMPLETED',purchase_units:[{custom_id:id,payments:{captures:[{id:'EXISTING-CAPTURE',status:'COMPLETED',amount:{currency_code:'USD',value:'12.00'}}]}}]});
+  };
+  try{const r=await capture(await getOrder(id));assert.equal(r.payment.status,'completed');assert.equal(r.payment.captureId,'EXISTING-CAPTURE');assert.equal(captures,0);}finally{globalThis.fetch=originalFetch;}
 });
 test('capacity, custom lead time, ingredient review and idempotent submission are enforced',{skip:!services},async()=>{
   const {createOrder,staffAction}=services;const {collection}=await import('../lib/db.js');
