@@ -149,6 +149,17 @@ MONGODB_DNS_SERVERS=1.1.1.1,8.8.8.8
 
 This affects the application's Node.js process only; it does not change Windows DNS settings. Leave it blank when system DNS works. Restart the development server after changing it.
 
+If this Atlas URI already works in another project on the same machine, keep the URI unchanged and start with `MONGODB_DNS_SERVERS=`. A forced public DNS resolver may be blocked even when your network's normal resolver works. The diagnostic compares system DNS with an explicit override when one is configured. The application passes the complete URI directly to `MongoClient`; `MONGODB_DB` only selects the database after connecting.
+
+If native SRV/TXT queries are refused, an explicit HTTPS discovery alternative is available:
+
+```dotenv
+MONGODB_DNS_SERVERS=
+MONGODB_DNS_TRANSPORT=https
+```
+
+This sends public Atlas hostname queries to Google's DNS-over-HTTPS service. Credentials and the stored URI are never sent to that service. Crumb discovers the actual SRV nodes and TXT options, preserves the URI's encoded credentials and explicit options, and constructs a standard seed URI in memory with TLS enabled by default. Node hostname lookups also use HTTPS in this mode. The fallback requires HTTPS access to `dns.google`; it does not bypass Atlas authentication, Atlas Network Access, or MongoDB's TCP port requirements. Leave the variable blank to use native MongoDB discovery. See [Google's HTTPS DNS API](https://developers.google.com/speed/public-dns/docs/doh/json).
+
 If SRV discovery still fails, open **Atlas → Connect → Drivers**, disable **SRV Connection String** if offered, and copy the exact standard `mongodb://` URI into `MONGODB_URI`. Preserve Atlas's TLS, replica-set and authentication options. Do not guess shard hostnames or simply replace `mongodb+srv://` with `mongodb://`.
 
 If DNS succeeds but connection fails, confirm the cluster is active, your current IP is in Atlas Network Access, and outbound TCP connections to the Atlas node ports are permitted. See [MongoDB's connection troubleshooting guide](https://www.mongodb.com/docs/atlas/troubleshoot-connection/).
@@ -185,6 +196,20 @@ https://YOUR-VERCEL-DOMAIN/api/paypal/webhook
 Subscribe to `PAYMENT.CAPTURE.COMPLETED`. The handler verifies signatures with PayPal, deduplicates processed events, and reconciles the original order via PayPal's server API. The buyer return page also verifies/captures the payment, so an absent webhook does not cause the browser to label an unverified approval as paid.
 
 Only the application-approved amount is sent. Checkout, capture and full-refund writes use stable PayPal request IDs; retries check existing state. A completed capture must match order identity, amount and currency. Unpaid orders cannot enter production. A pending checkout must be verified before cancellation is resolved.
+
+Return-page and webhook checks share an in-flight reconciliation for the same order. After a capture attempt, Crumb retrieves the complete PayPal order rather than assuming the capture response contains all verification fields. **Verify / recover payment status** can reconcile a completed PayPal order without charging again. Pending payments do not offer a second checkout.
+
+### Dedicated judge sandbox buyer login
+
+Create a disposable **Personal** account in PayPal Developer Dashboard → Testing Tools → Sandbox Accounts. Put only its test email and password in your local environment:
+
+```dotenv
+PAYPAL_SANDBOX_BUYER_EMAIL=dedicated-personal-sandbox-email
+PAYPAL_SANDBOX_BUYER_PASSWORD=dedicated-personal-sandbox-password
+SHOW_SANDBOX_BUYER_CREDENTIALS=true
+```
+
+With `DEMO_ENABLED=true`, this explicitly displays the test credentials in the checkout instructions. These credentials are public to demo visitors. Never put a real PayPal/developer login, business-account password or API secret in these fields. The fields are blank and display is off by default. Set the same environment variables on Vercel if the hosted judge demo should show them.
 
 To refund: customer requests cancellation → owner reviews the request → owner explicitly confirms a full sandbox refund. A pending refund is not labelled completed; use Recheck refund status. Refunds outside this app should be reconciled manually; this MVP does not process every possible external dispute/refund lifecycle event.
 
@@ -253,9 +278,13 @@ For no-payment evaluation, choose **Paid production / refund**. It creates an ex
 
 Also test: custom request → optional AI or manual brief; ingredient concern → staff gate; unpaid accepted order → production blocked; Back / Exit retaining selection; failed or cancelled PayPal approval → no paid status; cancellation → owner-confirmed refund.
 
+On the customer order page, **Switch to Merchant Studio** appears below the secure order key when `DEMO_ENABLED=true`. It opens that order's review page in a new tab without requiring the bakery owner's password. The secure order key authorizes a session limited to this single order; it cannot list other bakery orders or change menu/settings. After approving, return to the original customer tab and refresh its status to continue checkout. Set `DEMO_ENABLED=false` to disable this evaluation handoff.
+
 Email/SMS notifications are **not configured or simulated as sent**. Tracking works via the saved key; bakery contact details are available in the order record. Customer and merchant views refresh on demand; customer open-order views also poll every 15 seconds.
 
 ## Vercel deployment
+
+See [VERCEL_SETUP.md](VERCEL_SETUP.md) for the full variable-by-variable configuration, including the judge buyer login and webhook setup.
 
 1. Push this repository to your GitHub repository. Do not commit `.env` or `.env.local`.
 2. Import it into Vercel. Select **Next.js**, repository root `.`.
