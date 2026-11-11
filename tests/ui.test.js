@@ -7,11 +7,11 @@ const require=createRequire(import.meta.url);
 let ts;try{ts=require('typescript');}catch{if(process.env.CRUMB_TYPESCRIPT_PATH)ts=require(process.env.CRUMB_TYPESCRIPT_PATH);}
 
 test('customer chatbot keeps selected photo and selection across Back; Exit stays in options',{skip:!ts},()=>{
-  const state=[];let cursor=0;const navigated=[];
+  const state=[];let cursor=0;const navigated=[];let pathname='/order';
   const react={useState(initial){const index=cursor++;if(!(index in state))state[index]=initial;return[state[index],value=>{state[index]=typeof value==='function'?value(state[index]):value;}];},useMemo:fn=>fn(),useEffect:()=>{}};
   const jsx=(type,props)=>({type,props:props||{}});
   const Photo=props=>jsx('photo',props);
-  const mocks={react,'react/jsx-runtime':{jsx,jsxs:jsx,Fragment:'fragment'},'next/navigation':{useRouter:()=>({push:p=>navigated.push(p)}),usePathname:()=>'/order'},'next/link':{__esModule:true,default:props=>jsx('a',props)},'next/dynamic':{__esModule:true,default:()=>()=>null},'@/data/menu.json':JSON.parse(readFileSync(new URL('../data/menu.json',import.meta.url),'utf8')),'./Photo':{__esModule:true,default:Photo}};
+  const mocks={react,'react/jsx-runtime':{jsx,jsxs:jsx,Fragment:'fragment'},'next/navigation':{useRouter:()=>({push:p=>navigated.push(p),replace:p=>navigated.push(p)}),usePathname:()=>pathname},'next/link':{__esModule:true,default:props=>jsx('a',props)},'next/dynamic':{__esModule:true,default:()=>()=>null},'@/data/menu.json':JSON.parse(readFileSync(new URL('../data/menu.json',import.meta.url),'utf8')),'./Photo':{__esModule:true,default:Photo}};
   const source=readFileSync(new URL('../components/CrumbApp.js',import.meta.url),'utf8');
   const compiled=ts.transpileModule(source,{fileName:'CrumbApp.jsx',compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText;
   const mod={exports:{}};vm.runInNewContext(compiled,{require:id=>{if(!(id in mocks))throw Error('Unexpected UI dependency '+id);return mocks[id];},module:mod,exports:mod.exports,console,setTimeout:()=>{},Date});
@@ -30,4 +30,8 @@ test('customer chatbot keeps selected photo and selection across Back; Exit stay
   button('Exit').props.onClick();assert.equal(state[14],'exit');
   assert.ok(render().some(n=>n?.props?.role==='dialog'));
   button('Keep ordering').props.onClick();assert.equal(state[14],null);assert.equal(state[8].productId,'p12');
+  pathname='/orders/CR-TESTORDER1';state[0]={...state[0],demoEnabled:true};
+  state[15]={id:'CR-TESTORDER1',productId:'p12',productName:'Belgian Malt Cake',productSize:'2 Lbs',quantity:1,referenceTotal:2700,occasion:'Birthday',date:'2026-12-01',slot:'17:00–18:00',branch:'Demo',message:'',status:'pending',payment:{status:'unpaid'},history:[]};
+  const handoff=render().find(n=>n?.type==='a'&&text(n)==='Switch to Merchant Studio ↗');
+  assert.ok(handoff);assert.equal(handoff.props.target,'_blank');assert.equal(handoff.props.href,'/demo/merchant/CR-TESTORDER1');assert.ok(handoff.props.rel.includes('noopener'));
 });

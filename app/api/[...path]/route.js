@@ -20,7 +20,7 @@ async function handler(req,{params}) {
     const {path=[]}=await params;const route=path.join('/');const actor=await session(req);
     const workspace=actor?.workspace||'bakery';const ip=hash(req.headers.get('x-forwarded-for')?.split(',')[0]||'local');
     if(route==='health'&&req.method==='GET')return json({ok:true,storage:process.env.MONGODB_URI?'mongodb':'unconfigured'});
-    if(route==='config'&&req.method==='GET')return json({settings:await settings(workspace),products:await products(workspace),slots,branches,paypalConfigured:!!(process.env.PAYPAL_CLIENT_ID&&process.env.PAYPAL_CLIENT_SECRET),aiConfigured:!!process.env.OPENAI_API_KEY,demoEnabled:process.env.DEMO_ENABLED==='true',session:actor?{role:actor.role,workspace:actor.workspace}:null});
+    if(route==='config'&&req.method==='GET')return json({settings:await settings(workspace),products:await products(workspace),slots,branches,paypalConfigured:!!(process.env.PAYPAL_CLIENT_ID&&process.env.PAYPAL_CLIENT_SECRET),aiConfigured:!!process.env.OPENAI_API_KEY,demoEnabled:process.env.DEMO_ENABLED==='true',sandboxBuyer:process.env.DEMO_ENABLED==='true'&&process.env.SHOW_SANDBOX_BUYER_CREDENTIALS==='true'&&process.env.PAYPAL_SANDBOX_BUYER_EMAIL&&process.env.PAYPAL_SANDBOX_BUYER_PASSWORD?{email:process.env.PAYPAL_SANDBOX_BUYER_EMAIL,password:process.env.PAYPAL_SANDBOX_BUYER_PASSWORD}:null,session:actor?{role:actor.role,workspace:actor.workspace}:null});
     if(route==='auth/login'&&req.method==='POST') {
       await rateLimit(`login:${ip}`,8,900);const input=z.object({email:z.email(),password:z.string().max(200)}).parse(await body(req));
       if(!process.env.ADMIN_PASSWORD||process.env.ADMIN_PASSWORD.length<12||process.env.ADMIN_PASSWORD.startsWith('replace-'))throw new AppError('Configure ADMIN_EMAIL and a strong ADMIN_PASSWORD first.',503);
@@ -30,6 +30,16 @@ async function handler(req,{params}) {
     if(route==='auth/logout'&&req.method==='POST') {const r=json({ok:true});r.cookies.delete('crumb_session');return r;}
     if(route==='demo/start'&&req.method==='POST') {
       await rateLimit(`demo:${ip}`,10,3600);const identity=await demoIdentity();return cookie(json({ok:true,synthetic:true}),await sign(identity));
+    }
+    if(route==='demo/merchant-handoff'&&req.method==='POST') {
+      if(process.env.DEMO_ENABLED!=='true')throw new AppError('Judge handoff is disabled.',404);
+      await rateLimit(`judge-handoff:${ip}`,20,3600);
+      const {orderId}=z.object({orderId:z.string().regex(/^CR-[A-Z0-9_-]{10}$/)}).parse(await body(req));
+      // A customer must prove possession of this order's secure key. The issued
+      // judge session grants access to this one order, never the whole bakery.
+      const o=await authorizeOrder(req,orderId,null);
+      if(actor?.workspace===o.workspace&&['owner','demo'].includes(actor.role))return json({ok:true});
+      return cookie(json({ok:true}),await sign({role:'judge',workspace:o.workspace,orderId:o.id}));
     }
     if(route==='demo/scenario'&&req.method==='POST') {
       const a=await requireSession(req);if(a.role!=='demo'||!a.workspace.startsWith('demo_'))throw new AppError('Start a judge session first.',403);
@@ -79,6 +89,10 @@ async function handler(req,{params}) {
     }
     if(path[0]==='studio') {
       const a=await requireSession(req);
+      if(a.role==='judge') {
+        const allowed=(route==='studio/orders'&&req.method==='GET')||(route==='studio/audit'&&req.method==='GET')||(path[1]==='orders'&&path[2]===a.orderId&&req.method==='POST');
+        if(!allowed)throw new AppError('Judge access is limited to the current demo order.',403);
+      }
       if(route==='studio/report'&&req.method==='GET')return json({state:(await (await collection('reports')).findOne({_id:a.workspace}))?.state||null});
       if(route==='studio/report'&&req.method==='PUT') {
         const {state}=z.object({state:z.record(z.string(),z.unknown())}).parse(await body(req));
@@ -86,9 +100,10 @@ async function handler(req,{params}) {
         await (await collection('reports')).updateOne({_id:a.workspace},{$set:{state,updatedAt:now()}},{upsert:true});return json({ok:true});
       }
       if(route==='studio/orders'&&req.method==='GET') {
+        if(a.role==='judge') {const o=await getOrder(a.orderId);if(o.workspace!==a.workspace)throw new AppError('Order not found.',404);return json({orders:[publicOrder(o)]});}
         const orders=await (await collection('orders')).find({workspace:a.workspace}).sort({createdAt:-1}).limit(500).toArray();return json({orders:orders.map(publicOrder)});
       }
-      if(route==='studio/audit'&&req.method==='GET')return json({events:await (await collection('audit')).find({workspace:a.workspace}).sort({createdAt:-1}).limit(200).toArray()});
+      if(route==='studio/audit'&&req.method==='GET')return json({events:await (await collection('audit')).find({workspace:a.workspace,...(a.role==='judge'?{orderId:a.orderId}:{})}).sort({createdAt:-1}).limit(200).toArray()});
       if(path[1]==='orders'&&path[2]&&req.method==='POST')return json({order:publicOrder(await staffAction(path[2],a.workspace,staffSchema.parse(await body(req))))});
       if(route==='studio/settings'&&req.method==='PUT') {
         const value=z.object({bakeryName:z.string().min(1).max(80),standardLeadHours:z.number().int().min(1).max(720),customLeadHours:z.number().int().min(1).max(1440),slotCapacity:z.number().int().min(1).max(100),cancellationPolicy:z.string().min(5).max(2000),supportEmail:z.union([z.email(),z.literal('')]),assistantEnabled:z.boolean()}).parse(await body(req));
