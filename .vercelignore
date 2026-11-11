@@ -1,0 +1,16 @@
+# Exclude development-only files from deployment uploads, not from Git review.
+.git/
+.vercel/
+.next/
+node_modules/
+.env*
+design-tools/
+tests/
+docs/
+scripts/
+coverage/
+playwright-report/
+test-results/
+*.log
+*.zip
+README.md

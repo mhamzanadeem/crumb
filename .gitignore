@@ -1,0 +1,48 @@
+# Dependencies and generated build output
+node_modules/
+.next/
+out/
+dist/
+build/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Local credentials; keep the documented template
+.env*
+!.env.example
+*.pem
+*.key
+
+# Test output and logs (test source stays versioned)
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+*.log
+next-panic-*
+npm-debug.log*
+
+# Local design generators; not part of the deployed application
+/design-tools/
+/docs/
+/scripts/
+/tmp/
+/temp/
+/.publish/
+*.bundle
+*.zip
+__pycache__/
+*.py[cod]
+
+# Editor and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+
+# Keep package-lock.json, application source, tests, menu data,
+# and public/images/ tracked: they support reproducible builds and review.
