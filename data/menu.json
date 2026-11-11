@@ -1,0 +1,719 @@
+{
+  "source": "Menu supplied by user; not independently verified",
+  "products": [
+    {
+      "id": "p1",
+      "category": "Cakes",
+      "name": "All Chocolate Dreamcake",
+      "price": 3100,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p2",
+      "category": "Cakes",
+      "name": "Chocolate Dreamcake",
+      "price": 3100,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p3",
+      "category": "Cakes",
+      "name": "Dubai Dreamcake",
+      "price": 3400,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p4",
+      "category": "Cakes",
+      "name": "Ferrero Rocher Cake",
+      "price": 3600,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p5",
+      "category": "Cakes",
+      "name": "Lotus Three Milk Cake",
+      "price": 3400,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p6",
+      "category": "Cakes",
+      "name": "Pistachio Cake",
+      "price": 3400,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p7",
+      "category": "Cakes",
+      "name": "Raffaello Cake",
+      "price": 3200,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p8",
+      "category": "Cakes",
+      "name": "Nuts Fusion Cake",
+      "price": 3200,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p9",
+      "category": "Cakes",
+      "name": "Lotus Cake",
+      "price": 3100,
+      "size": "2.5 LBS Approx"
+    },
+    {
+      "id": "p10",
+      "category": "Cakes",
+      "name": "Parisian 7 Layers Cake",
+      "price": 2900,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p11",
+      "category": "Cakes",
+      "name": "Honey Cake",
+      "price": 2700,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p12",
+      "category": "Cakes",
+      "name": "Belgian Malt Cake",
+      "price": 2700,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p13",
+      "category": "Cakes",
+      "name": "Pistachio Three Milk Cake",
+      "price": 2700,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p14",
+      "category": "Cakes",
+      "name": "Ferrero Classic Cake",
+      "price": 2600,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p15",
+      "category": "Cakes",
+      "name": "Salted Caramel Cake",
+      "price": 2600,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p16",
+      "category": "Cakes",
+      "name": "Dairy Milk Cake",
+      "price": 2500,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p17",
+      "category": "Cakes",
+      "name": "Three Milk Cake",
+      "price": 2400,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p18",
+      "category": "Cakes",
+      "name": "Nutella Cake",
+      "price": 2400,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p19",
+      "category": "Cakes",
+      "name": "Red Velvet Cake",
+      "price": 2400,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p20",
+      "category": "Cakes",
+      "name": "London Cheesecake",
+      "price": 2400,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p21",
+      "category": "Cakes",
+      "name": "Chocolate Heaven Cake",
+      "price": 2300,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p22",
+      "category": "Cakes",
+      "name": "Coffee Cake",
+      "price": 2300,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p23",
+      "category": "Cakes",
+      "name": "German Fudge Cake",
+      "price": 2200,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p24",
+      "category": "Cakes",
+      "name": "Chocolate Mousse Cake",
+      "price": 2200,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p25",
+      "category": "Cakes",
+      "name": "Hershey’s Chocolate Cake",
+      "price": 2000,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p26",
+      "category": "Cakes",
+      "name": "Milky Malt Cake",
+      "price": 1900,
+      "size": "2 Lbs"
+    },
+    {
+      "id": "p27",
+      "category": "Cupcakes",
+      "name": "Ferrero Rocher Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p28",
+      "category": "Cupcakes",
+      "name": "Red Velvet Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p29",
+      "category": "Cupcakes",
+      "name": "Belgian Malt Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p30",
+      "category": "Cupcakes",
+      "name": "Chocolate Hazelnut Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p31",
+      "category": "Cupcakes",
+      "name": "Classic Chocolate Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p32",
+      "category": "Cupcakes",
+      "name": "Original Malt Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p33",
+      "category": "Cupcakes",
+      "name": "M&M Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p34",
+      "category": "Cupcakes",
+      "name": "Chocolate Cream Cheese",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p35",
+      "category": "Cupcakes",
+      "name": "Swiss Dark Chocolate",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p36",
+      "category": "Cupcakes",
+      "name": "Salted Caramel Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p37",
+      "category": "Cupcakes",
+      "name": "After 8 Mint Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p38",
+      "category": "Cupcakes",
+      "name": "Milk Chocolate Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p39",
+      "category": "Cupcakes",
+      "name": "Nutella Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p40",
+      "category": "Cupcakes",
+      "name": "Matcha Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p41",
+      "category": "Cupcakes",
+      "name": "Cotton Candy Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p42",
+      "category": "Cupcakes",
+      "name": "Keylime Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p43",
+      "category": "Cupcakes",
+      "name": "Lotus Biscoff Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p44",
+      "category": "Cupcakes",
+      "name": "Oreo Cookie Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p45",
+      "category": "Cupcakes",
+      "name": "Raffaello Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p46",
+      "category": "Cupcakes",
+      "name": "Strawberry Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p47",
+      "category": "Cupcakes",
+      "name": "Lite Coffee Cupcake",
+      "price": 270,
+      "size": "Individual serving"
+    },
+    {
+      "id": "p48",
+      "category": "Donuts",
+      "name": "Boston Chocolate Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p49",
+      "category": "Donuts",
+      "name": "Boston Cream Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p50",
+      "category": "Donuts",
+      "name": "Chocolate Three Milk",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p51",
+      "category": "Donuts",
+      "name": "Cotton Candy Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p52",
+      "category": "Donuts",
+      "name": "Double Chocolate Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p53",
+      "category": "Donuts",
+      "name": "Ferrero Rocher Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p54",
+      "category": "Donuts",
+      "name": "KitKat Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p55",
+      "category": "Donuts",
+      "name": "Lemon N Cheese Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p56",
+      "category": "Donuts",
+      "name": "Lotus Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p57",
+      "category": "Donuts",
+      "name": "Malt Chocolate Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p58",
+      "category": "Donuts",
+      "name": "Nutella Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p59",
+      "category": "Donuts",
+      "name": "Orange Creamsicle",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p60",
+      "category": "Donuts",
+      "name": "Oreo Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p61",
+      "category": "Donuts",
+      "name": "Peanut Butter Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p62",
+      "category": "Donuts",
+      "name": "Pistachio Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p63",
+      "category": "Donuts",
+      "name": "Pistachio Kunafa Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p64",
+      "category": "Donuts",
+      "name": "Plain Chocolate Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p65",
+      "category": "Donuts",
+      "name": "Plain Glaze Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p66",
+      "category": "Donuts",
+      "name": "Raspberry Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p67",
+      "category": "Donuts",
+      "name": "Red Velvet Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p68",
+      "category": "Donuts",
+      "name": "Strawberry Donut",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p69",
+      "category": "Donuts",
+      "name": "Strawberry Three Milk",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p70",
+      "category": "Desserts",
+      "name": "Strawberry Cheese Cake",
+      "price": 450,
+      "size": "Slice"
+    },
+    {
+      "id": "p71",
+      "category": "Desserts",
+      "name": "Raspberry Cheese Cake",
+      "price": 450,
+      "size": "Slice"
+    },
+    {
+      "id": "p72",
+      "category": "Desserts",
+      "name": "Lotus Cheese Cake",
+      "price": 450,
+      "size": "Slice"
+    },
+    {
+      "id": "p73",
+      "category": "Desserts",
+      "name": "Mango Cheese Cake",
+      "price": 450,
+      "size": "Slice"
+    },
+    {
+      "id": "p74",
+      "category": "Desserts",
+      "name": "Walnut Cup Pie",
+      "price": 300,
+      "size": "1 Pc"
+    },
+    {
+      "id": "p75",
+      "category": "Desserts",
+      "name": "Apple Cup Pie",
+      "price": 300,
+      "size": "1 Pc"
+    },
+    {
+      "id": "p76",
+      "category": "Desserts",
+      "name": "Belgian Chocolate Cup Tart",
+      "price": 300,
+      "size": "1 Pc"
+    },
+    {
+      "id": "p77",
+      "category": "Desserts",
+      "name": "Pistachio Kunafa Tart",
+      "price": 400,
+      "size": "1 Pc"
+    },
+    {
+      "id": "p78",
+      "category": "Desserts",
+      "name": "Crème Brulee",
+      "price": 350,
+      "size": "1 Pc"
+    },
+    {
+      "id": "p79",
+      "category": "Desserts",
+      "name": "Apple Crumble Cheese Muffin",
+      "price": 250,
+      "size": "1 Pc"
+    },
+    {
+      "id": "p80",
+      "category": "Desserts",
+      "name": "Banana Walnut Muffin",
+      "price": 250,
+      "size": "1 Pc"
+    },
+    {
+      "id": "p81",
+      "category": "Desserts",
+      "name": "Chocolate Lava Muffin",
+      "price": 250,
+      "size": "1 Pc"
+    },
+    {
+      "id": "p82",
+      "category": "Sundaes",
+      "name": "Red Velvet Sundae",
+      "price": 500,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p83",
+      "category": "Sundaes",
+      "name": "Three Milk Sundae",
+      "price": 500,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p84",
+      "category": "Sundaes",
+      "name": "Nutella Sundae",
+      "price": 500,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p85",
+      "category": "Sundaes",
+      "name": "Galaxy Sundae",
+      "price": 500,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p86",
+      "category": "Sundaes",
+      "name": "Salted Caramel Sundae",
+      "price": 500,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p87",
+      "category": "Sundaes",
+      "name": "Lotus Sundae",
+      "price": 500,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p88",
+      "category": "Sundaes",
+      "name": "Hazelnut Parfait",
+      "price": 520,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p89",
+      "category": "Sundaes",
+      "name": "Lotus Three Milk Sundae",
+      "price": 600,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p90",
+      "category": "Sundaes",
+      "name": "Pistachio Tres Leches Sundae",
+      "price": 600,
+      "size": "Individual dessert"
+    },
+    {
+      "id": "p91",
+      "category": "Cookies",
+      "name": "Coffee Toffee",
+      "price": 370,
+      "size": "Individual"
+    },
+    {
+      "id": "p92",
+      "category": "Cookies",
+      "name": "Pistachio Cookie",
+      "price": 370,
+      "size": "Individual"
+    },
+    {
+      "id": "p93",
+      "category": "Cookies",
+      "name": "Lotus Cookie",
+      "price": 370,
+      "size": "Individual"
+    },
+    {
+      "id": "p94",
+      "category": "Cookies",
+      "name": "Triple Chocolate Cookie",
+      "price": 370,
+      "size": "Individual"
+    },
+    {
+      "id": "p95",
+      "category": "Cookies",
+      "name": "Chocolate Marble",
+      "price": 370,
+      "size": "Individual"
+    },
+    {
+      "id": "p96",
+      "category": "Cookies",
+      "name": "Red Velvet Cookie",
+      "price": 370,
+      "size": "Individual"
+    },
+    {
+      "id": "p97",
+      "category": "Brownies",
+      "name": "Chocolate Chunk Brownie",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p98",
+      "category": "Brownies",
+      "name": "Nutella Brownie",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p99",
+      "category": "Brownies",
+      "name": "Belgian Malt Brownie",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p100",
+      "category": "Brownies",
+      "name": "Cadbury Brownie",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p101",
+      "category": "Brownies",
+      "name": "Hershey’s Fudge Brownie",
+      "price": 250,
+      "size": "Individual"
+    },
+    {
+      "id": "p102",
+      "category": "Brownies",
+      "name": "Peanut Butter Brownie",
+      "price": 250,
+      "size": "Individual"
+    }
+  ]
+}
