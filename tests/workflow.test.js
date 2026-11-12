@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as module from 'node:module';
+import axios from 'axios';
 // Explicit dependency seams: these integration tests exercise our real service,
 // in-memory adapter and fake PayPal transport, without an Atlas account or keys.
 let services;
@@ -12,6 +13,16 @@ if(module.registerHooks) {
   }});
   process.env.NODE_ENV='test';process.env.ALLOW_MEMORY_DB='true';delete process.env.MONGODB_URI;
   process.env.PAYPAL_CLIENT_ID='test-id';process.env.PAYPAL_CLIENT_SECRET='test-secret';
+  process.env.PAYPAL_TRANSPORT='apimatic';
+  // Exercise the real generated SDK's OAuth, schemas, controllers and response
+  // decoding while substituting only its lowest-level HTTP connection.
+  const adapter=async config=>{
+    const response=await globalThis.fetch(config.url,{method:config.method.toUpperCase(),headers:config.headers.toJSON(),body:config.data});
+    return {data:await response.text(),status:response.status,statusText:response.statusText,headers:{'content-type':'application/json'},config};
+  };
+  axios.defaults.adapter=adapter;
+  // The generated SDK's dual package currently loads the CJS Axios dialect.
+  module.createRequire(import.meta.url)('axios').defaults.adapter=adapter;
   services=await import('../lib/service.js');
 }
 const input=(quantity=1)=>({requestId:crypto.randomUUID(),productId:'p12',quantity,occasion:'Birthday',date:new Date(Date.now()+10*86400000).toISOString().slice(0,10),slot:'17:00–18:00',branch:'F-10 demo outlet',message:'Hi!',custom:'',ingredientConcern:'',customer:{name:'Customer',email:'customer@example.com',phone:''}});
@@ -30,10 +41,18 @@ test('full approval, token authorization, verified capture, production and refun
   const originalFetch=globalThis.fetch;let createCount=0,captureCount=0;let captured=false;
   const provider=()=>({id:'PP-ORDER',status:captured?'COMPLETED':'APPROVED',purchase_units:[{custom_id:id,payments:{captures:captured?[{id:'CAP-1',status:'COMPLETED',amount:{currency_code:'USD',value:'12.00'}}]:[]}}],links:[{rel:'approve',href:'https://www.sandbox.paypal.com/checkoutnow?token=PP-ORDER'}]});
   globalThis.fetch=async(url,options={})=>{
-    if(url.endsWith('/oauth2/token'))return Response.json({access_token:'TEST'});
-    if(url.endsWith('/v2/checkout/orders')&&options.method==='POST'){createCount++;return Response.json({...provider(),status:'CREATED'});}
-    if(url.endsWith('/capture')){captureCount++;captured=true;return Response.json({id:'PP-ORDER',status:'COMPLETED'});}
-    if(url.includes('/refund'))return Response.json({id:'REF-1',status:'COMPLETED'});
+    if(url.endsWith('/oauth2/token'))return Response.json({access_token:'TEST',token_type:'Bearer',expires_in:3600});
+    if(url.endsWith('/v2/checkout/orders')&&options.method==='POST'){
+      assert.equal(options.headers['PayPal-Request-Id'],`create-${id}-1`);
+      assert.equal(options.headers.Prefer,'return=representation');
+      const body=JSON.parse(options.body);
+      assert.equal(body.purchase_units[0].custom_id,id);
+      assert.deepEqual(body.purchase_units[0].amount,{currency_code:'USD',value:'12.00'});
+      assert.match(body.payment_source.paypal.experience_context.return_url,/payment\/return/);
+      createCount++;return Response.json({...provider(),status:'CREATED'});
+    }
+    if(url.endsWith('/capture')){assert.equal(options.headers['PayPal-Request-Id'],`capture-${id}-1`);captureCount++;captured=true;return Response.json({id:'PP-ORDER',status:'COMPLETED'});}
+    if(url.includes('/refund')){assert.equal(options.headers['PayPal-Request-Id'],`refund-${id}`);return Response.json({id:'REF-1',status:'COMPLETED'});}
     return Response.json(provider());
   };
   try {
@@ -56,7 +75,7 @@ test('recover an already completed PayPal order without charging again',{skip:!s
   await updateOrder(await getOrder(id),{payment:{status:'pending',paypalOrderId:'PP-RECOVER',amount:'12.00',currency:'USD',quoteVersion:1}},'Checkout created');
   const originalFetch=globalThis.fetch;let captures=0;
   globalThis.fetch=async(url,options={})=>{
-    if(url.endsWith('/oauth2/token'))return Response.json({access_token:'test'});
+    if(url.endsWith('/oauth2/token'))return Response.json({access_token:'test',token_type:'Bearer',expires_in:3600});
     if(url.endsWith('/capture')){captures++;throw new Error('Must not charge again');}
     return Response.json({id:'PP-RECOVER',status:'COMPLETED',purchase_units:[{custom_id:id,payments:{captures:[{id:'EXISTING-CAPTURE',status:'COMPLETED',amount:{currency_code:'USD',value:'12.00'}}]}}]});
   };

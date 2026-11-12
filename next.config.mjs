@@ -1,6 +1,6 @@
 const config = {
   poweredByHeader: false,
-  serverExternalPackages: ['mongodb'],
+  serverExternalPackages: ['mongodb', '@paypal/paypal-server-sdk'],
   async headers() {
     return [{ source: '/(.*)', headers: [
       { key: 'X-Content-Type-Options', value: 'nosniff' },

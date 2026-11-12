@@ -18,6 +18,7 @@ Add variables under **Project Settings → Environment Variables**, selecting **
 | `APP_URL` | Your exact production URL, such as `https://YOUR-PROJECT.vercel.app`, without a trailing slash. Never use localhost here. |
 | `PAYPAL_CLIENT_ID` | The client ID from your PayPal **sandbox** application. |
 | `PAYPAL_CLIENT_SECRET` | The secret from that same sandbox application. |
+| `PAYPAL_TRANSPORT` | `apimatic` — uses the installed APIMatic-generated PayPal SDK. |
 | `SANDBOX_UNIT_PRICE_USD` | `12.00` |
 | `DEMO_ENABLED` | `true` for hackathon judging. |
 | `ALLOW_MEMORY_DB` | `false` |

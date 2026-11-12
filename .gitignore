@@ -25,6 +25,7 @@ npm-debug.log*
 
 # Local design generators; not part of the deployed application
 /design-tools/
+/submission-media/
 /docs/
 /scripts/
 /tmp/

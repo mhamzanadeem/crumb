@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.15.0" },
+  "engines": {
+    "node": ">=22.15.0"
+  },
   "scripts": {
+    "setup:apimatic-sdk": "npm install --save-exact @paypal/paypal-server-sdk@2.5.0",
+    "setup:apimatic-context": "npx --yes context-plugins install paypal --targets codex --yes",
+    "paypal:check": "node --env-file=.env.local lib/cli/paypal-check.js",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
@@ -13,15 +18,18 @@
     "db:check": "node --env-file=.env.local lib/cli/db-check.js"
   },
   "dependencies": {
+    "@paypal/paypal-server-sdk": "2.5.0",
+    "ag-studio": "^3.1.0",
+    "ag-studio-react": "^3.1.0",
+    "jose": "^6.1.0",
+    "mongodb": "^6.21.0",
     "next": "^16.0.0",
+    "openai": "^6.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "mongodb": "^6.21.0",
-    "jose": "^6.1.0",
-    "zod": "^4.1.0",
-    "openai": "^6.0.0",
-    "ag-studio": "^3.1.0",
-    "ag-studio-react": "^3.1.0"
+    "zod": "^4.1.0"
   },
-  "devDependencies": { "typescript": "^5.9.0" }
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  }
 }

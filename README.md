@@ -36,7 +36,7 @@ Crumb combines a guided customer assistant with a merchant operations studio. Ro
 | --- | --- |
 | Application | Next.js 16, React 19, JavaScript |
 | Persistence | MongoDB Atlas, MongoDB Node.js driver |
-| Payments | PayPal Orders and Payments APIs, sandbox only |
+| Payments | PayPal Orders and Payments APIs via APIMatic-generated PayPal Server SDK, sandbox only |
 | Optional AI | OpenAI Responses API with bounded structured output |
 | Analytics | AG Studio |
 | Media | Bundled static assets; optional Cloudinary uploads |
@@ -262,7 +262,25 @@ Only the owner role is implemented for the real bakery. The design's future gran
 
 Set `NEXT_PUBLIC_AG_STUDIO_LICENSE_KEY` to your AG Studio trial/commercial key before hosted use. AG Studio is a commercial dependency with its own licensing conditions. It is a real component, not a screenshot. The browser bundle includes the public AG Studio license, which is normal; it must not contain server credentials.
 
-APIMatic's PayPal Context Plugin is a **development-time** tool, not a runtime credential or dependency. Install it with `npx context-plugins install paypal` using the [official installer](https://github.com/apimatic/context-plugins-installer). It was not installed or invoked in the authoring environment. Do not claim a sponsor integration was used merely because its name is in documentation.
+### APIMatic PayPal integration
+
+Crumb uses the official APIMatic-generated `@paypal/paypal-server-sdk` **2.5.0**, pinned in the dependency and lockfile. The SDK transport is the default for creating, retrieving and capturing orders and for issuing/retrieving refunds. `lib/paypal-apimatic.js` preserves wire JSON and decimal amount strings for the existing verified-capture checks, retains stable idempotency keys, disables automatic retries and redacts SDK errors. Webhook signature verification remains on PayPal's Notifications REST endpoint.
+
+APIMatic's **PayPal Context Plugin 0.4.1** was installed in Codex and consulted during the integration review. Its current TypeScript guide describes a different generated client, so official SDK signatures were checked against installed source rather than copied between packages. The plugin is a development tool; the generated SDK is the runtime dependency.
+
+```powershell
+npm ci
+# Optional: install the development Context Plugin in Codex on another machine.
+npm run setup:apimatic-context
+npm test
+npm run build
+# Uses .env.local; creates/reads one unapproved sandbox checkout, never pays.
+npm run paypal:check
+```
+
+Set `PAYPAL_TRANSPORT=apimatic` in `.env.local` and Vercel, retain the existing PayPal sandbox keys and redeploy. No APIMatic API key is required. `PAYPAL_TRANSPORT=rest` is an explicit rollback option, not a silent fallback. The SDK is declared as a server external package with a traceable import so Vercel includes it in the server function.
+
+Validation on November 12, 2026: 15 tests passed, the production build passed, and live sandbox authentication plus checkout creation/readback passed. The test checkout remained unapproved and no funds moved. Capture, recovery and refund workflows passed with the real SDK against mocked HTTP responses. Real buyer approval, capture, refund and webhook delivery remain hosted-deployment checks. See [integration details](APIMATIC_INTEGRATION.md) and [Devpost text updates](SUBMISSION_UPDATES.md).
 
 ## Judge walkthrough
 

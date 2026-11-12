@@ -5,6 +5,7 @@
 node_modules/
 .env*
 design-tools/
+submission-media/
 tests/
 docs/
 scripts/
